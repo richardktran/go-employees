@@ -1,0 +1,28 @@
+package employee
+
+import (
+	"context"
+
+	"github.com/richardktran/go-employees/pkg/model"
+)
+
+type employeeRepository interface {
+	GetEmployees(ctx context.Context) ([]model.Employee, error)
+	AddEmployee(ctx context.Context, employee model.EmployeeCreation) error
+}
+
+type Controller struct {
+	repo employeeRepository
+}
+
+func New(repo employeeRepository) *Controller {
+	return &Controller{repo: repo}
+}
+
+func (c *Controller) GetEmployees(ctx context.Context) ([]model.Employee, error) {
+	return c.repo.GetEmployees(ctx)
+}
+
+func (c *Controller) AddEmployee(ctx context.Context, employee model.EmployeeCreation) error {
+	return c.repo.AddEmployee(ctx, employee)
+}
