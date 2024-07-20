@@ -1,5 +1,3 @@
-start:
-	@go run cmd/main.go
 build:
 	@go build -o employee cmd/main.go
 	@./employee

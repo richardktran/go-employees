@@ -14,13 +14,13 @@ make sync-data
 ```
 4. Run the server
 ```bash
-make start
+go run cmd/main.go --port 8080 (or any port you want, default is 8080)
 ```
 5. To see the list of employees, run the curl command below or visit http://localhost:8080/employees in your browser
 ```bash
 curl http://localhost:8080/employees
 ```
-6. To add new employee, run the curl command below
+6. To add new employee, run the curl command below, change the name, salary, age, and profile_image to your desired values
 ```bash
 curl -X POST -H "Content-Type: application/json" -d '{"name":"Richard Tran","salary":100000,"age":24, "profile_image":"profile1.png"}' http://localhost:8080/employees
 ```

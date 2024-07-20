@@ -1,6 +1,8 @@
 package main
 
 import (
+	"flag"
+	"fmt"
 	"log"
 	"net/http"
 
@@ -10,14 +12,17 @@ import (
 )
 
 func main() {
+	var port = flag.String("port", "8080", "port to listen on")
+	flag.Parse()
+
 	repo := file.New("data/employees.txt")
 	ctrl := employee.New(repo)
 	h := httpEmployeeHandler.New(ctrl)
 
 	http.Handle("/employees", http.HandlerFunc(h.Handle))
 
-	log.Println("Listening on :8080")
-	if err := http.ListenAndServe(":8080", nil); err != nil {
+	log.Println("Listening on port", *port)
+	if err := http.ListenAndServe(fmt.Sprintf(":%s", *port), nil); err != nil {
 		panic(err)
 	}
 }
