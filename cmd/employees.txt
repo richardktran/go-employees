@@ -1,0 +1,7 @@
+id,name,salary,age,profile_image
+1,John Doe,50000,30,profile1.jpg
+2,Jane Smith,60000,28,profile2.jpg
+3,Bob Johnson,55000,35,profile3.jpg
+4,Alice Brown,62000,29,profile4.jpg
+5,Charlie Davis,70000,40,profile5.jpg
+6,Richard K Tran,100000,24,
