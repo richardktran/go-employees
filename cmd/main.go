@@ -10,7 +10,7 @@ import (
 )
 
 func main() {
-	repo := file.New("employees.txt")
+	repo := file.New("data/employees.txt")
 	ctrl := employee.New(repo)
 	h := httpEmployeeHandler.New(ctrl)
 
