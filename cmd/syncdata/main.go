@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 	"os"
 )
@@ -50,4 +51,6 @@ func main() {
 		newEmployee := fmt.Sprintf("%d,%s,%d,%d,%s\n", employee.ID, employee.Name, employee.Salary, employee.Age, employee.ProfileImage)
 		file.WriteString(newEmployee)
 	}
+
+	log.Println("Successfully! All records has been fetched.")
 }

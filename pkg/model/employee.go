@@ -14,3 +14,8 @@ type EmployeeCreation struct {
 	Age          int    `json:"age"`
 	ProfileImage string `json:"profile_image"`
 }
+
+type EmployeeResponse struct {
+	Status string     `json:"status"`
+	Data   []Employee `json:"data"`
+}
