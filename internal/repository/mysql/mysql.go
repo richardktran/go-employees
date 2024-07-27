@@ -77,3 +77,13 @@ func (r *Repository) AddEmployee(_ context.Context, employee model.EmployeeCreat
 	_, err := r.db.Exec("INSERT INTO employees (name, salary, age, profile_image) VALUES (?, ?, ?, ?)", employee.Name, employee.Salary, employee.Age, employee.ProfileImage)
 	return err
 }
+
+func (r *Repository) UpdateEmployee(_ context.Context, id int, employee model.EmployeeUpdate) error {
+	_, err := r.db.Exec("UPDATE employees SET name = ?, salary = ?, age = ?, profile_image = ? WHERE id = ?", employee.Name, employee.Salary, employee.Age, employee.ProfileImage, id)
+	return err
+}
+
+func (r *Repository) DeleteEmployee(_ context.Context, id int) error {
+	_, err := r.db.Exec("DELETE FROM employees WHERE id = ?", id)
+	return err
+}

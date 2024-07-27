@@ -9,6 +9,8 @@ import (
 type employeeRepository interface {
 	GetEmployees(ctx context.Context, search string, paging *model.Paging) ([]model.Employee, error)
 	AddEmployee(ctx context.Context, employee model.EmployeeCreation) error
+	UpdateEmployee(ctx context.Context, id int, employee model.EmployeeUpdate) error
+	DeleteEmployee(_ context.Context, id int) error
 }
 
 type Controller struct {
@@ -25,4 +27,12 @@ func (c *Controller) GetEmployees(ctx context.Context, search string, paging *mo
 
 func (c *Controller) AddEmployee(ctx context.Context, employee model.EmployeeCreation) error {
 	return c.repo.AddEmployee(ctx, employee)
+}
+
+func (c *Controller) UpdateEmployee(ctx context.Context, id int, employee model.EmployeeUpdate) error {
+	return c.repo.UpdateEmployee(ctx, id, employee)
+}
+
+func (c *Controller) DeleteEmployee(ctx context.Context, id int) error {
+	return c.repo.DeleteEmployee(ctx, id)
 }

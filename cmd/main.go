@@ -30,6 +30,8 @@ func main() {
 	h := httpEmployeeHandler.New(ctrl)
 
 	http.Handle("/employees", http.HandlerFunc(h.Handle))
+	http.Handle("PUT /employees/{id}", http.HandlerFunc(h.UpdateEmployee))
+	http.Handle("DELETE /employees/{id}", http.HandlerFunc(h.DeleteEmployee))
 
 	log.Println("Listening on port", *port)
 	if err := http.ListenAndServe(fmt.Sprintf(":%s", *port), nil); err != nil {
