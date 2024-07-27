@@ -20,7 +20,11 @@ go run cmd/main.go --port 8080 (or any port you want, default is 8080)
 ```bash
 curl http://localhost:8080/employees
 ```
-6. To add new employee, run the curl command below, change the name, salary, age, and profile_image to your desired values
+6. To search for an employee name, run the curl command below, change the name to your desired value
+```bash
+curl http://localhost:8080/employees?page=1&limit=5&search=Nixon
+```
+7. To add new employee, run the curl command below, change the name, salary, age, and profile_image to your desired values
 ```bash
 curl -X POST -H "Content-Type: application/json" -d '{"name":"Richard Tran","salary":100000,"age":24, "profile_image":"profile1.png"}' http://localhost:8080/employees
 ```

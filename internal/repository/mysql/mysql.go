@@ -38,9 +38,22 @@ func New() (*Repository, error) {
 	return &Repository{db: db}, nil
 }
 
-func (r *Repository) GetEmployees(_ context.Context, paging *model.Paging) ([]model.Employee, error) {
+func (r *Repository) GetEmployees(_ context.Context, search string, paging *model.Paging) ([]model.Employee, error) {
 	offset := (paging.Page - 1) * paging.Limit
-	rows, err := r.db.Query("SELECT id, name, salary, age, profile_image FROM employees LIMIT ?, ?", offset, paging.Limit)
+	var rows *sql.Rows
+	var err error
+
+	if search != "" {
+		rows, err = r.db.
+			Query("SELECT id, name, salary, age, profile_image FROM employees WHERE MATCH (name) AGAINST (? IN NATURAL LANGUAGE MODE) LIMIT ? OFFSET ?",
+				search,
+				paging.Limit,
+				offset,
+			)
+	} else {
+		rows, err = r.db.Query("SELECT id, name, salary, age, profile_image FROM employees LIMIT ? OFFSET ?", paging.Limit, offset)
+	}
+
 	if err != nil {
 		log.Println("Error getting employees from MySQL", err)
 		return nil, err

@@ -40,9 +40,11 @@ func (h *Handler) GetEmployees(w http.ResponseWriter, r *http.Request) {
 	paging.Page, _ = strconv.Atoi(queryString.Get("page"))
 	paging.Limit, _ = strconv.Atoi(queryString.Get("limit"))
 
+	search := queryString.Get("search")
+
 	paging.Process()
 
-	employees, err := h.ctrl.GetEmployees(r.Context(), &paging)
+	employees, err := h.ctrl.GetEmployees(r.Context(), search, &paging)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
