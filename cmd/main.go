@@ -6,16 +6,26 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/richardktran/go-employees/configs/env"
 	"github.com/richardktran/go-employees/internal/controller/employee"
 	httpEmployeeHandler "github.com/richardktran/go-employees/internal/handler/http"
-	"github.com/richardktran/go-employees/internal/repository/file"
+	"github.com/richardktran/go-employees/internal/repository/mysql"
 )
+
+func init() {
+	env.Setup()
+}
 
 func main() {
 	var port = flag.String("port", "8080", "port to listen on")
 	flag.Parse()
 
-	repo := file.New("data/employees.txt")
+	// repo := file.New("data/employees.txt")
+	repo, err := mysql.New()
+	if err != nil {
+		panic(err)
+	}
+
 	ctrl := employee.New(repo)
 	h := httpEmployeeHandler.New(ctrl)
 
