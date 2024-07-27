@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"strconv"
 
 	"github.com/richardktran/go-employees/internal/controller/employee"
 	"github.com/richardktran/go-employees/pkg/model"
@@ -33,7 +34,17 @@ func (h *Handler) Handle(w http.ResponseWriter, r *http.Request) {
 
 // GetEmployees returns all employees
 func (h *Handler) GetEmployees(w http.ResponseWriter, r *http.Request) {
-	employees, err := h.ctrl.GetEmployees(r.Context())
+	var paging model.Paging
+	queryString := r.URL.Query()
+
+	paging.Page, _ = strconv.Atoi(queryString.Get("page"))
+	paging.Limit, _ = strconv.Atoi(queryString.Get("limit"))
+
+	search := queryString.Get("search")
+
+	paging.Process()
+
+	employees, err := h.ctrl.GetEmployees(r.Context(), search, &paging)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -63,10 +74,46 @@ func (h *Handler) AddEmployee(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 
-	w.WriteHeader(http.StatusCreated)
 	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusCreated)
 
 	if err := json.NewEncoder(w).Encode(employee); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+}
+
+func (h *Handler) UpdateEmployee(w http.ResponseWriter, r *http.Request) {
+	var employee model.EmployeeUpdate
+	id, _ := strconv.Atoi(r.PathValue("id"))
+	if err := json.NewDecoder(r.Body).Decode(&employee); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	if err := h.ctrl.UpdateEmployee(r.Context(), id, employee); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+
+	if err := json.NewEncoder(w).Encode(employee); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+}
+
+func (h *Handler) DeleteEmployee(w http.ResponseWriter, r *http.Request) {
+	id, _ := strconv.Atoi(r.PathValue("id"))
+	if err := h.ctrl.DeleteEmployee(r.Context(), id); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+
+	if err := json.NewEncoder(w).Encode(model.EmployeeResponse{
+		Status: "success",
+	}); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 }

@@ -1,0 +1,35 @@
+services:
+  db:
+    image: 'arm64v8/mysql:latest'
+    container_name: employee_db
+    ports:
+      - '3336:3306'
+    environment:
+      MYSQL_DATABASE: go_employees
+      MYSQL_USER: root
+      MYSQL_PASSWORD: secret
+      MYSQL_ROOT_PASSWORD: secret
+    volumes:
+      - dbdata:/var/lib/mysql/
+    networks:
+      - employees_network
+
+  employees-service:
+    image: 'employees-service'
+    container_name: employees-service
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - '8080:8080'
+    networks:
+      - employees_network
+    depends_on:
+      - db
+
+volumes:
+  dbdata:  
+
+networks:
+  employees_network:
+    driver: bridge
