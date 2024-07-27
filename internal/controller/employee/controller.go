@@ -7,7 +7,7 @@ import (
 )
 
 type employeeRepository interface {
-	GetEmployees(ctx context.Context) ([]model.Employee, error)
+	GetEmployees(ctx context.Context, paging *model.Paging) ([]model.Employee, error)
 	AddEmployee(ctx context.Context, employee model.EmployeeCreation) error
 }
 
@@ -19,8 +19,8 @@ func New(repo employeeRepository) *Controller {
 	return &Controller{repo: repo}
 }
 
-func (c *Controller) GetEmployees(ctx context.Context) ([]model.Employee, error) {
-	return c.repo.GetEmployees(ctx)
+func (c *Controller) GetEmployees(ctx context.Context, paging *model.Paging) ([]model.Employee, error) {
+	return c.repo.GetEmployees(ctx, paging)
 }
 
 func (c *Controller) AddEmployee(ctx context.Context, employee model.EmployeeCreation) error {

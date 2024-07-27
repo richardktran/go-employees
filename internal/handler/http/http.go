@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"strconv"
 
 	"github.com/richardktran/go-employees/internal/controller/employee"
 	"github.com/richardktran/go-employees/pkg/model"
@@ -33,7 +34,15 @@ func (h *Handler) Handle(w http.ResponseWriter, r *http.Request) {
 
 // GetEmployees returns all employees
 func (h *Handler) GetEmployees(w http.ResponseWriter, r *http.Request) {
-	employees, err := h.ctrl.GetEmployees(r.Context())
+	var paging model.Paging
+	queryString := r.URL.Query()
+
+	paging.Page, _ = strconv.Atoi(queryString.Get("page"))
+	paging.Limit, _ = strconv.Atoi(queryString.Get("limit"))
+
+	paging.Process()
+
+	employees, err := h.ctrl.GetEmployees(r.Context(), &paging)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

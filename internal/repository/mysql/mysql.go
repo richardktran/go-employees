@@ -38,9 +38,9 @@ func New() (*Repository, error) {
 	return &Repository{db: db}, nil
 }
 
-func (r *Repository) GetEmployees(_ context.Context) ([]model.Employee, error) {
-	log.Println("Getting employees from MySQL")
-	rows, err := r.db.Query("SELECT id, name, salary, age, profile_image FROM employees")
+func (r *Repository) GetEmployees(_ context.Context, paging *model.Paging) ([]model.Employee, error) {
+	offset := (paging.Page - 1) * paging.Limit
+	rows, err := r.db.Query("SELECT id, name, salary, age, profile_image FROM employees LIMIT ?, ?", offset, paging.Limit)
 	if err != nil {
 		log.Println("Error getting employees from MySQL", err)
 		return nil, err
@@ -61,6 +61,6 @@ func (r *Repository) GetEmployees(_ context.Context) ([]model.Employee, error) {
 }
 
 func (r *Repository) AddEmployee(_ context.Context, employee model.EmployeeCreation) error {
-	_, err := r.db.Exec("INSERT INTO employees (name, age, salary) VALUES (?, ?, ?)", employee.Name, employee.Age, employee.Salary)
+	_, err := r.db.Exec("INSERT INTO employees (name, salary, age, profile_image) VALUES (?, ?, ?, ?)", employee.Name, employee.Salary, employee.Age, employee.ProfileImage)
 	return err
 }
